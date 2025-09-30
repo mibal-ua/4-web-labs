@@ -1,0 +1,27 @@
+{
+  "name": "lab3-telegram-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot with menu and ChatGPT integration for Web Technologies Lab 3",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "chatgpt",
+    "menu"
+  ],
+  "author": "Student",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^5.1.0",
+    "node-telegram-bot-api": "^0.63.0",
+    "openai": "^4.20.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
