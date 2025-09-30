@@ -1,0 +1,269 @@
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Login Page Styles */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-container h1 {
+    margin-bottom: 30px;
+    color: #1a1a1a;
+}
+
+#login-form {
+    background: #17a2b8;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.form-group input:focus {
+    outline: none;
+    background-color: #fff;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffc107;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #e0a800;
+}
+
+/* Chat Page Styles */
+.chat-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: #17a2b8;
+    color: white;
+    width: 250px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.room-info {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.room-info h3 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.room-info span {
+    font-weight: bold;
+}
+
+.users-container h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+#users-list {
+    list-style: none;
+}
+
+#users-list li {
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+/* Chat Main Styles */
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+/* Admin Welcome Message */
+#admin-welcome {
+    padding: 20px;
+    background-color: #17a2b8;
+    color: white;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Messages Container */
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+/* Message Styles */
+.message {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.admin-message {
+    background-color: #17a2b8;
+    color: white;
+    text-align: center;
+    margin: 10px auto;
+    max-width: 80%;
+}
+
+.admin-message .time {
+    margin-right: 10px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.own-message {
+    background-color: #28a745;
+    color: white;
+    margin-left: auto;
+}
+
+.other-message {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.time {
+    opacity: 0.7;
+}
+
+.message-text {
+    font-size: 14px;
+}
+
+/* Message Form */
+.message-form {
+    display: flex;
+    padding: 20px;
+    background-color: #fff;
+    border-top: 1px solid #e9ecef;
+}
+
+#message-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+#message-input:focus {
+    outline: none;
+    border-color: #17a2b8;
+}
+
+.send-btn {
+    padding: 12px 30px;
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.send-btn:hover {
+    background-color: #e0a800;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chat-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: 150px;
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+    }
+    
+    .room-info {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .users-container {
+        text-align: right;
+    }
+    
+    #users-list {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .message {
+        max-width: 85%;
+    }
+}
