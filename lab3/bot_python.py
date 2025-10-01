@@ -17,12 +17,17 @@ logger = logging.getLogger(__name__)
 
 # Ініціалізація ChatGPT
 chatbot = None
-if os.getenv('CHATGPT_ACCESS_TOKEN'):
+token = os.getenv('CHATGPT_ACCESS_TOKEN')
+if token:
+    logger.info(f"Attempting to initialize ChatGPT with token starting with: {token[:10]}...")
     try:
-        chatbot = Chatbot(config={"access_token": os.getenv('CHATGPT_ACCESS_TOKEN')})
+        chatbot = Chatbot(config={"access_token": token})
         logger.info("ChatGPT initialized successfully")
     except Exception as e:
-        logger.error(f"Failed to initialize ChatGPT: {e}")
+        logger.error(f"Failed to initialize ChatGPT: {type(e).__name__}: {e}")
+        chatbot = None
+else:
+    logger.warning("CHATGPT_ACCESS_TOKEN not found in environment variables")
 
 # Стани користувачів
 user_states = {}
@@ -127,6 +132,7 @@ async def handle_chatgpt_prompt(update: Update, context: ContextTypes.DEFAULT_TY
 async def handle_chatgpt_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обробка повідомлень для ChatGPT"""
     user_message = update.message.text
+    logger.info(f"Processing ChatGPT request: {user_message[:50]}...")
     
     # Показати індикатор набору
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
@@ -134,16 +140,23 @@ async def handle_chatgpt_message(update: Update, context: ContextTypes.DEFAULT_T
     try:
         if chatbot:
             # Використання revChatGPT
+            logger.info("Sending request to ChatGPT...")
             response = ""
             for data in chatbot.ask(user_message):
-                response = data["message"]
+                response = data.get("message", "")
+                logger.debug(f"Received data from ChatGPT: {data}")
             
+            if not response:
+                raise Exception("Empty response from ChatGPT")
+            
+            logger.info(f"ChatGPT response received: {response[:100]}...")
             await update.message.reply_markdown(
                 f"🤖 *ChatGPT відповідає:*\n\n{response}",
                 reply_markup=back_keyboard
             )
         else:
             # Локальні відповіді якщо ChatGPT недоступний
+            logger.warning("ChatGPT not available, using local responses")
             response = generate_local_response(user_message.lower())
             await update.message.reply_markdown(
                 f"🤖 *AI асистент відповідає:*\n\n{response}",
@@ -232,7 +245,9 @@ def main() -> None:
                     response = {
                         'status': 'Bot is running!',
                         'timestamp': str(os.times()),
-                        'chatgpt_available': chatbot is not None
+                        'chatgpt_available': chatbot is not None,
+                        'chatgpt_token_set': bool(os.getenv('CHATGPT_ACCESS_TOKEN')),
+                        'telegram_token_set': bool(os.getenv('TELEGRAM_TOKEN'))
                     }
                     self.wfile.write(json.dumps(response).encode())
                 else:
