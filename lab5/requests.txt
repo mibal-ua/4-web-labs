@@ -1,0 +1,573 @@
+# GraphQL запити для тестування Lab 5
+
+## 1. СТВОРЕННЯ ТЕСТОВИХ ДАНИХ (MUTATIONS)
+
+### Додавання книги
+mutation AddBook {
+  addBook(input: {
+    title: "The Great Gatsby"
+    author: {
+      name: "F. Scott Fitzgerald"
+      bio: "American novelist and essayist"
+      country: "USA"
+      birthDate: "1896-09-24"
+    }
+    category: FICTION
+    publishedYear: 1925
+    price: 15.99
+    pages: 180
+    language: "English"
+    publisher: "Charles Scribner's Sons"
+    isbn: "978-0-7432-7356-5"
+    rating: 4.2
+    inStock: true
+    description: "A classic American novel set in the Jazz Age"
+  }) {
+    id
+    title
+    author {
+      name
+      country
+    }
+    category
+    price
+  }
+}
+
+### Масове додавання книг
+mutation AddMultipleBooks {
+  addBooks(books: [
+    {
+      title: "1984"
+      author: {
+        name: "George Orwell"
+        bio: "English novelist and journalist"
+        country: "United Kingdom"
+      }
+      category: FICTION
+      publishedYear: 1949
+      price: 13.99
+      pages: 328
+      inStock: true
+    },
+    {
+      title: "Clean Code"
+      author: {
+        name: "Robert C. Martin"
+        bio: "Software engineer and instructor"
+        country: "USA"
+      }
+      category: TECHNOLOGY
+      publishedYear: 2008
+      price: 45.00
+      pages: 464
+      inStock: true
+    },
+    {
+      title: "The Catcher in the Rye"
+      author: {
+        name: "J.D. Salinger"
+        bio: "American writer"
+        country: "USA"
+      }
+      category: FICTION
+      publishedYear: 1951
+      price: 12.99
+      pages: 277
+      inStock: true
+    },
+    {
+      title: "A Brief History of Time"
+      author: {
+        name: "Stephen Hawking"
+        bio: "Theoretical physicist and cosmologist"
+        country: "United Kingdom"
+      }
+      category: SCIENCE
+      publishedYear: 1988
+      price: 18.99
+      pages: 256
+      inStock: true
+    }
+  ]) {
+    id
+    title
+    author {
+      name
+    }
+    category
+  }
+}
+
+## 2. ЗАПИТИ НА ОТРИМАННЯ ДАНИХ (QUERIES)
+
+### Отримання всіх книг з базовою інформацією
+query GetAllBooks {
+  books {
+    books {
+      id
+      title
+      author {
+        name
+        country
+      }
+      category
+      price
+      inStock
+    }
+    totalCount
+    hasNextPage
+  }
+}
+
+### Фільтрація за категорією та ціною
+query GetFictionBooks {
+  books(
+    filters: {
+      category: FICTION
+      minPrice: 10
+      maxPrice: 30
+      inStock: true
+    }
+    page: 1
+    limit: 5
+  ) {
+    books {
+      title
+      author {
+        name
+      }
+      price
+      publishedYear
+      rating
+    }
+    totalCount
+    hasNextPage
+  }
+}
+
+### Сортування за ціною
+query BooksSortedByPrice {
+  books(
+    sort: {
+      field: PRICE
+      order: DESC
+    }
+    limit: 10
+  ) {
+    books {
+      title
+      author {
+        name
+      }
+      price
+      category
+    }
+  }
+}
+
+### Пошук книг за текстом
+query SearchBooks {
+  searchBooks(query: "technology programming", limit: 5) {
+    title
+    author {
+      name
+    }
+    description
+    category
+    rating
+  }
+}
+
+### Книги конкретного автора
+query BooksByAuthor {
+  booksByAuthor(authorName: "George Orwell", limit: 10) {
+    title
+    publishedYear
+    description
+    price
+    inStock
+  }
+}
+
+### Отримання конкретної книги
+query GetBookById {
+  book(id: "YOUR_BOOK_ID_HERE") {
+    id
+    title
+    author {
+      name
+      bio
+      birthDate
+      country
+    }
+    description
+    publishedYear
+    category
+    price
+    pages
+    language
+    publisher
+    isbn
+    rating
+    inStock
+    createdAt
+    updatedAt
+  }
+}
+
+## 3. СТАТИСТИЧНІ ЗАПИТИ
+
+### Статистика за категоріями
+query CategoryStatistics {
+  categoryStats {
+    category
+    count
+    averagePrice
+    averageRating
+  }
+}
+
+### Список унікальних авторів
+query GetAuthors {
+  authors(limit: 20) {
+    name
+    bio
+    country
+    birthDate
+  }
+}
+
+### Категорії з детальною інформацією
+query GetCategories {
+  categories {
+    category
+    count
+    averagePrice
+    averageRating
+  }
+}
+
+## 4. СКЛАДНІ ЗАПИТИ
+
+### Комбінований запит
+query ComplexQuery {
+  # Останні додані книги
+  recentBooks: books(
+    sort: { field: CREATED_AT, order: DESC }
+    limit: 3
+  ) {
+    books {
+      title
+      author { name }
+      createdAt
+    }
+  }
+  
+  # Найдорожчі книги
+  expensiveBooks: books(
+    sort: { field: PRICE, order: DESC }
+    limit: 3
+  ) {
+    books {
+      title
+      price
+      category
+    }
+  }
+  
+  # Статистика
+  categoryStats {
+    category
+    count
+    averagePrice
+  }
+}
+
+### Фільтрація за роком та мовою
+query ModernEnglishBooks {
+  books(
+    filters: {
+      minYear: 2000
+      language: "English"
+      inStock: true
+    }
+    sort: { field: PUBLISHED_YEAR, order: DESC }
+  ) {
+    books {
+      title
+      author {
+        name
+        country
+      }
+      publishedYear
+      language
+      price
+    }
+    totalCount
+  }
+}
+
+### Пошук за різними критеріями
+query AdvancedSearch {
+  # Наукові книги
+  scienceBooks: booksByCategory(category: SCIENCE, limit: 5) {
+    title
+    author { name }
+    publishedYear
+    rating
+  }
+  
+  # Технічні книги дорожче $20
+  techBooks: books(
+    filters: { category: TECHNOLOGY, minPrice: 20 }
+    limit: 5
+  ) {
+    books {
+      title
+      price
+      pages
+    }
+  }
+}
+
+## 5. ОПЕРАЦІЇ ОНОВЛЕННЯ
+
+### Оновлення книги
+mutation UpdateBook {
+  updateBook(
+    id: "YOUR_BOOK_ID_HERE"
+    input: {
+      price: 19.99
+      inStock: false
+      rating: 4.5
+      description: "Updated description"
+    }
+  ) {
+    id
+    title
+    price
+    inStock
+    rating
+    updatedAt
+  }
+}
+
+### Оновлення статусу наявності
+mutation UpdateStock {
+  updateBookStock(id: "YOUR_BOOK_ID_HERE", inStock: false) {
+    id
+    title
+    inStock
+  }
+}
+
+### Оновлення рейтингу
+mutation UpdateRating {
+  updateBookRating(id: "YOUR_BOOK_ID_HERE", rating: 4.8) {
+    id
+    title
+    rating
+  }
+}
+
+## 6. ВИДАЛЕННЯ
+
+### Видалення книги
+mutation DeleteBook {
+  deleteBook(id: "YOUR_BOOK_ID_HERE")
+}
+
+## 7. ІНТРОСПЕКЦІЯ SCHEMA
+
+### Отримання типів
+query GetSchema {
+  __schema {
+    types {
+      name
+      description
+    }
+  }
+}
+
+### Деталі конкретного типу
+query GetBookType {
+  __type(name: "Book") {
+    name
+    fields {
+      name
+      type {
+        name
+      }
+    }
+  }
+}
+
+### Деталі Query типу
+query GetQueryType {
+  __type(name: "Query") {
+    name
+    fields {
+      name
+      description
+      args {
+        name
+        type {
+          name
+        }
+      }
+    }
+  }
+}
+
+### Деталі Mutation типу
+query GetMutationType {
+  __type(name: "Mutation") {
+    name
+    fields {
+      name
+      description
+      args {
+        name
+        type {
+          name
+        }
+      }
+    }
+  }
+}
+
+## 8. ТЕСТУВАННЯ ПОМИЛОК
+
+### Неіснуючий ID
+query NonExistentBook {
+  book(id: "507f1f77bcf86cd799439011") {
+    id
+    title
+  }
+}
+
+### Некоректні дані при створенні
+mutation InvalidBook {
+  addBook(input: {
+    title: ""  # Пуста назва
+    author: {
+      name: ""  # Пусте ім'я автора
+    }
+    category: FICTION
+    price: -10  # Від'ємна ціна
+  }) {
+    id
+    title
+  }
+}
+
+### Некоректний рейтинг
+mutation InvalidRating {
+  updateBookRating(id: "YOUR_BOOK_ID_HERE", rating: 10) {  # Рейтинг > 5
+    id
+    rating
+  }
+}
+
+## 9. ПАГІНАЦІЯ
+
+### Перша сторінка
+query FirstPage {
+  books(page: 1, limit: 3) {
+    books {
+      title
+      author { name }
+    }
+    totalCount
+    hasNextPage
+    hasPreviousPage
+  }
+}
+
+### Друга сторінка
+query SecondPage {
+  books(page: 2, limit: 3) {
+    books {
+      title
+      author { name }
+    }
+    totalCount
+    hasNextPage
+    hasPreviousPage
+  }
+}
+
+## 10. ДОДАТКОВІ ПРИКЛАДИ КНИГ ДЛЯ ТЕСТУВАННЯ
+
+### Додавання різноманітних книг
+mutation AddMoreBooks {
+  addBooks(books: [
+    {
+      title: "To Kill a Mockingbird"
+      author: {
+        name: "Harper Lee"
+        bio: "American novelist"
+        country: "USA"
+      }
+      category: FICTION
+      publishedYear: 1960
+      price: 14.99
+      pages: 376
+      inStock: true
+    },
+    {
+      title: "The Art of Computer Programming"
+      author: {
+        name: "Donald Knuth"
+        bio: "Computer scientist and mathematician"
+        country: "USA"
+      }
+      category: TECHNOLOGY
+      publishedYear: 1968
+      price: 89.99
+      pages: 650
+      inStock: true
+    },
+    {
+      title: "Sapiens"
+      author: {
+        name: "Yuval Noah Harari"
+        bio: "Israeli historian and philosopher"
+        country: "Israel"
+      }
+      category: HISTORY
+      publishedYear: 2011
+      price: 22.99
+      pages: 443
+      inStock: true
+    },
+    {
+      title: "The Lord of the Rings"
+      author: {
+        name: "J.R.R. Tolkien"
+        bio: "English writer and philologist"
+        country: "United Kingdom"
+      }
+      category: FANTASY
+      publishedYear: 1954
+      price: 29.99
+      pages: 1216
+      inStock: true
+    }
+  ]) {
+    id
+    title
+    category
+    author { name }
+  }
+}
+
+## ІНСТРУКЦІЇ ДЛЯ ВИКОРИСТАННЯ:
+
+1. Спочатку запустіть сервер: npm start
+2. Відкрийте GraphQL Playground: http://localhost:4000/graphql
+3. Почніть з mutations для створення тестових даних
+4. Потім тестуйте queries
+5. Замініть "YOUR_BOOK_ID_HERE" на реальні ID з попередніх запитів
+6. Експериментуйте з різними фільтрами та параметрами
