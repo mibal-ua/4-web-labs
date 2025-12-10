@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система управління технічними картами</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔧 Система управління технічними картами</h1>
+            <div class="api-links">
+                <a href="/docs" target="_blank">📚 API Документація</a>
+                <a href="/redoc" target="_blank">📖 ReDoc</a>
+            </div>
+        </header>
+
+        <main>
+            <!-- Статистика -->
+            <section class="stats-section">
+                <h2>📊 Статистика</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <h3>Загальна кількість</h3>
+                        <p class="stat-value" id="totalCards">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Загальний час обробки</h3>
+                        <p class="stat-value"><span id="totalTime">0</span> хв</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Середній час обробки</h3>
+                        <p class="stat-value"><span id="avgTime">0</span> хв</p>
+                    </div>
+                </div>
+                <div class="processing-stats" id="processingStats"></div>
+            </section>
+
+            <!-- Форма додавання/редагування -->
+            <section class="form-section">
+                <h2 id="formTitle">➕ Додати технічну карту</h2>
+                <form id="technicalCardForm">
+                    <input type="hidden" id="cardId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="detailName">Назва деталі:</label>
+                            <input type="text" id="detailName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="processingType">Вид обробки:</label>
+                            <select id="processingType" required>
+                                <option value="">-- Виберіть --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="processingDuration">Тривалість (хв):</label>
+                            <input type="number" id="processingDuration" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" id="submitBtn">Додати</button>
+                        <button type="button" id="cancelBtn" style="display: none;">Скасувати</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Фільтри -->
+            <section class="filter-section">
+                <h2>🔍 Фільтри</h2>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="filterType">Вид обробки:</label>
+                        <select id="filterType">
+                            <option value="">Всі</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterMinDuration">Мін. тривалість:</label>
+                        <input type="number" id="filterMinDuration" min="0">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterMaxDuration">Макс. тривалість:</label>
+                        <input type="number" id="filterMaxDuration" min="0">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDetailName">Назва деталі містить:</label>
+                        <input type="text" id="filterDetailName">
+                    </div>
+                    <button id="applyFilters" class="filter-btn">Застосувати</button>
+                    <button id="clearFilters" class="filter-btn secondary">Очистити</button>
+                </div>
+            </section>
+
+            <!-- Таблиця технічних карт -->
+            <section class="table-section">
+                <h2>📋 Технічні карти</h2>
+                <div class="table-container">
+                    <table id="cardsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Назва деталі</th>
+                                <th>Вид обробки</th>
+                                <th>Тривалість (хв)</th>
+                                <th>Створено</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cardsTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">Завантаження...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Лабораторна робота №6 - FastAPI | Варіант 11 - База технічних карт</p>
+            <p>Виконав: Балахон М.О., група ІМ-22</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
